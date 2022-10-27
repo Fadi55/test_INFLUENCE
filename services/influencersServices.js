@@ -2,11 +2,24 @@ const firebase = require("firebase");
 //service  of List influencers
 async function getAllInfluencers() {
   let data;
-  const influencersReference = await firebase.database().ref("/influencers/");
+  let allUfo=[]
+  var lastState, lastKey;
+  const influencersReference = await firebase.database().ref("/influencers/")
+  .limitToFirst(31)
+ 
   await influencersReference.on("value", function (snapshot) {
-    data = snapshot.val();
+    snapshot.forEach((snap) => {
+      allUfo.push(snap.val());
+      lastState = snap.val().state; // 
+      lastKey = snap.key; // 
+    });
+   
+     // data =  Object.values(snapshot.val());
+
   });
-  return data;
+ 
+  return allUfo;
+
 }
 
 //service  of count ALl influencers

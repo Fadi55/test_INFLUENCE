@@ -13,16 +13,17 @@ import { brandsServices } from "../services";
 
 //list of all brands
 async function getAllInbrands(request, response, next) {
+  
   try {
-    const brands = await brandsServices.getAllInbrands();
-    return response.status(200).json({
-      brands 
+    const brands =  await brandsServices.getAllInbrands();
+    response.status(200).send({
+      status: 200,
+      response: brands,
     });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-    return response.status(500).json({
-      error: "Internal error retrieving brands!",
+  } catch (error) {
+    res.status(500).send({
+      status: 500,
+      message: `Something wen't wrong`,
     });
   }
 }

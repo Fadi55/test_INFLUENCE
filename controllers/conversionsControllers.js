@@ -99,6 +99,7 @@ async function getAllPurchasesPerBrandsStat(request, response) {
     let commissionAffiliate = 0;
     let sizeSales;
     let brandName;
+   let  OffreArray=[]
     // console.log("getAllInfluencers")
     const {
       params: { offerId },
@@ -108,6 +109,7 @@ async function getAllPurchasesPerBrandsStat(request, response) {
       .ref(`/conversions/purchasesPerBrands/${offerId}`)
       .once("value")
       .then((snapshot) => {
+   
         if (!snapshot) {
           return response.status(404).json({
             error: "no offredata found",
@@ -115,29 +117,35 @@ async function getAllPurchasesPerBrandsStat(request, response) {
         }
         sizeSales = Object.keys(snapshot.val()).length;
         snapshot.forEach(function (child) {
+      
           if (child.val()) {
+            OffreArray.push(child.val()?.offerId)
+           
             brandName = child.val()?.brandName;
+          
             amount += child.val()?.amount;
             amountCure =
-              Math.round(amount * 100) / 100 + " " + child.val()?.currency;
+              Math.round(amount * 100) / 100  ;
             commission += parseInt(child.val()?.commission);
             commissionAffiliate += parseInt(child.val()?.commissionAffiliate);
           }
         });
-
-        return response.status(200).json({
-          brandName:brandName,
+ 
+       let  obj={ brandName:brandName,
           sizeSales: sizeSales,
+          _id:OffreArray[0],
           Amounts: amountCure,
           Commissions: commission,
-          CommissionAffiliates: commissionAffiliate,
-        });
+          CommissionAffiliates: commissionAffiliate,}
+          response.status(200).send({
+            status: 200,
+            response: obj,
+          });
       });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-    return response.status(500).json({
-      error: "Internal error retrieving offres!",
+  } catch (error) {
+    response.status(500).send({
+      status: 500,
+      message: `Something wen't wrong`,
     });
   }
 }

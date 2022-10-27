@@ -5,7 +5,8 @@ async function getAllInbrands() {
   let data;
   const brandsReference = await firebase.database().ref("/brands/");
   await brandsReference.on("value", function (snapshot) {
-    data = snapshot.val();
+    data =  Object.values(snapshot.val());
+
   });
   return data;
 }

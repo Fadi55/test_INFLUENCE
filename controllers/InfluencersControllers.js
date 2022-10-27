@@ -13,16 +13,18 @@ import { influencersServices } from "../services";
 
 //List of all influencers
 async function getAllInfluencers(request, response, next) {
+  
+
   try {
-    const influencers = await influencersServices.getAllInfluencers();
-    return response.status(200).json({
-      influencers ,
+    const user = await influencersServices.getAllInfluencers();
+    response.status(200).send({
+      status: 200,
+      response: user,
     });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-    return response.status(500).json({
-      error: "Internal error retrieving users!",
+  } catch (error) {
+    response.status(500).send({
+      status: 500,
+      message: `Something wen't wrong`,
     });
   }
 }
